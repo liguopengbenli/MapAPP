@@ -107,7 +107,7 @@ class AddHappyPlaceActivity : AppCompatActivity(), View.OnClickListener {
                         Toast.makeText(this, "Please select an image", Toast.LENGTH_SHORT).show()
                     }else ->{
                              val happyPlaceModel = HappyPlaceModel(
-                                 0, // TODO shoud be unique
+                                 0, //  shoud be unique but it take care auto increase
                                  et_title.text.toString(),
                                  saveImageToInternalStorage.toString(),
                                  et_description.toString(),
