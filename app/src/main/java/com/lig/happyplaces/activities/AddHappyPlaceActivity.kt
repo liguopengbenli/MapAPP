@@ -1,4 +1,4 @@
-package com.lig.happyplaces
+package com.lig.happyplaces.activities
 
 import android.Manifest
 import android.app.Activity
@@ -9,7 +9,6 @@ import android.content.Context
 import android.content.ContextWrapper
 import android.content.Intent
 import android.graphics.Bitmap
-import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
@@ -23,6 +22,7 @@ import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.PermissionToken
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
+import com.lig.happyplaces.R
 import kotlinx.android.synthetic.main.activity_add_happy_place.*
 import java.io.File
 import java.io.FileOutputStream
@@ -36,6 +36,9 @@ class AddHappyPlaceActivity : AppCompatActivity(), View.OnClickListener {
 
     private var cal = Calendar.getInstance()
     private lateinit var dateSetListener: DatePickerDialog.OnDateSetListener
+    private var saveImageToInternalStorage : Uri? = null
+    private var mLatitude: Double = 0.0
+    private var mLongitude: Double = 0.0
 
     companion object{
         private const val GALLERY = 1
@@ -61,6 +64,7 @@ class AddHappyPlaceActivity : AppCompatActivity(), View.OnClickListener {
 
         et_date.setOnClickListener(this)
         tv_add_image.setOnClickListener(this)
+        btn_save.setOnClickListener(this)
     }
 
     // when there are lots of views for onlick using this structure to simplifier
@@ -85,6 +89,9 @@ class AddHappyPlaceActivity : AppCompatActivity(), View.OnClickListener {
                     }
                 }.show()
             }
+            R.id.btn_save ->{
+                
+            }
         }
     }
 
@@ -97,8 +104,7 @@ class AddHappyPlaceActivity : AppCompatActivity(), View.OnClickListener {
                     try{
                         //val selectedImageBitmap = ImageDecoder.createSource(this.contentResolver, contentURI)
                         val selectedImageBitmap = MediaStore.Images.Media.getBitmap(this.contentResolver, contentURI)
-                        val imgUri = saveImageToInternalStorage(selectedImageBitmap)
-                        Log.e("save image", "Path : $imgUri")
+                        saveImageToInternalStorage = saveImageToInternalStorage(selectedImageBitmap)
 
                         iv_place_image.setImageBitmap(selectedImageBitmap)
                     }catch (e: IOException){
@@ -108,8 +114,7 @@ class AddHappyPlaceActivity : AppCompatActivity(), View.OnClickListener {
                 }
             }else if(requestCode == CAMERA){
                 val thumbnail : Bitmap = data!!.extras!!.get("data") as Bitmap
-                val imgUri = saveImageToInternalStorage(thumbnail)
-                Log.e("save image", "Path : $imgUri")
+                saveImageToInternalStorage = saveImageToInternalStorage(thumbnail)
                 iv_place_image.setImageBitmap(thumbnail)
             }
         }
@@ -187,6 +192,7 @@ class AddHappyPlaceActivity : AppCompatActivity(), View.OnClickListener {
         et_date.setText(sdf.format(cal.time).toString())
     }
 
+    // this method is amazing, we store img once and when app is reload we just reload url to the img
     private fun saveImageToInternalStorage(bitmap: Bitmap):Uri{
         val wrapper = ContextWrapper(applicationContext)
         var file = wrapper.getDir(IMAGE_DIR, Context.MODE_PRIVATE)
