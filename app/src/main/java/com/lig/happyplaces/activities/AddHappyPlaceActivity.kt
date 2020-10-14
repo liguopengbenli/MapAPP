@@ -120,6 +120,7 @@ class AddHappyPlaceActivity : AppCompatActivity(), View.OnClickListener {
                         val addHappyPlaceResult = dbHandler.addHappyPlace(happyPlaceModel)
                         if(addHappyPlaceResult>0){
                             Toast.makeText(this@AddHappyPlaceActivity, "The place is inserted", Toast.LENGTH_SHORT).show()
+                            setResult(Activity.RESULT_OK)
                         }
                         finish()
                     }

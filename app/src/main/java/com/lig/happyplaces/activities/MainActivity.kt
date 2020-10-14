@@ -1,5 +1,6 @@
 package com.lig.happyplaces.activities
 
+import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -16,10 +17,10 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        getHappyPlacesListFromLocalDb()
+        getHappyPlacesListFromLocalDb() //setup view
         fabAddHappyPlace.setOnClickListener {
             val intent = Intent(this, AddHappyPlaceActivity::class.java)
-            startActivity(intent)
+            startActivityForResult(intent, ADD_PLACE_ACTIVITY_REQUEST_CODE)
         }
     }
 
@@ -42,6 +43,21 @@ class MainActivity : AppCompatActivity() {
         rv_happy_places_list.setHasFixedSize(true)
         val placesAdapter = HappyPlacesAdapter(this, happyPlaceList)
         rv_happy_places_list.adapter = placesAdapter
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if(requestCode == ADD_PLACE_ACTIVITY_REQUEST_CODE){
+            if(resultCode == Activity.RESULT_OK){
+                getHappyPlacesListFromLocalDb() // update view
+            }else{
+                Log.e("Activity", "Cancelled or Back pressed")
+            }
+        }
+    }
+
+    companion object{
+         const val ADD_PLACE_ACTIVITY_REQUEST_CODE = 1
     }
 
 
