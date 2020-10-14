@@ -42,6 +42,8 @@ class AddHappyPlaceActivity : AppCompatActivity(), View.OnClickListener {
     private var mLatitude: Double = 0.0
     private var mLongitude: Double = 0.0
 
+    private var mHappyPlaceDetails: HappyPlaceModel? = null
+
     companion object{
         private const val GALLERY = 1
         private const val CAMERA = 2
@@ -57,6 +59,11 @@ class AddHappyPlaceActivity : AppCompatActivity(), View.OnClickListener {
         toolbar_add_place.setNavigationOnClickListener {
             onBackPressed()
         }
+
+        if(intent.hasExtra(MainActivity.EXTRA_PLACE_DETAILS)){ //when edit exist item
+            mHappyPlaceDetails = intent.getParcelableExtra(MainActivity.EXTRA_PLACE_DETAILS) as HappyPlaceModel
+        }
+
         dateSetListener = DatePickerDialog.OnDateSetListener{ view, year, month, dayOfMonth ->
             cal.set(Calendar.YEAR, year)
             cal.set(Calendar.MONTH, month)
@@ -65,6 +72,20 @@ class AddHappyPlaceActivity : AppCompatActivity(), View.OnClickListener {
         }
 
         updateDateIntent() // set default date as current date
+
+        if(mHappyPlaceDetails != null){ //populate for edition exist item
+            supportActionBar?.title = "Edit Happy place"
+            et_title.setText(mHappyPlaceDetails!!.title)
+            et_description.setText(mHappyPlaceDetails!!.description)
+            et_date.setText(mHappyPlaceDetails!!.date)
+            et_location.setText(mHappyPlaceDetails!!.location)
+            mLatitude = mHappyPlaceDetails!!.latitude
+            mLongitude = mHappyPlaceDetails!!.longitude
+            saveImageToInternalStorage = Uri.parse(mHappyPlaceDetails!!.image)
+            iv_place_image.setImageURI(saveImageToInternalStorage)
+            btn_save.text = "UPDATE"
+        }
+
         et_date.setOnClickListener(this)
         tv_add_image.setOnClickListener(this)
         btn_save.setOnClickListener(this)
@@ -119,7 +140,7 @@ class AddHappyPlaceActivity : AppCompatActivity(), View.OnClickListener {
                         val dbHandler = DatabaseHandler(this)
                         val addHappyPlaceResult = dbHandler.addHappyPlace(happyPlaceModel)
                         if(addHappyPlaceResult>0){
-                            Toast.makeText(this@AddHappyPlaceActivity, "The place is inserted", Toast.LENGTH_SHORT).show()
+                            //Toast.makeText(this@AddHappyPlaceActivity, "The place is inserted", Toast.LENGTH_SHORT).show()
                             setResult(Activity.RESULT_OK)
                         }
                         finish()
