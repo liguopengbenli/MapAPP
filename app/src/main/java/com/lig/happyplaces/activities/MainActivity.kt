@@ -13,6 +13,7 @@ import com.lig.happyplaces.R
 import com.lig.happyplaces.adapters.HappyPlacesAdapter
 import com.lig.happyplaces.database.DatabaseHandler
 import com.lig.happyplaces.models.HappyPlaceModel
+import com.lig.happyplaces.utils.SwipeToDeleteCallback
 import com.lig.happyplaces.utils.SwipeToEditCallback
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -31,7 +32,7 @@ class MainActivity : AppCompatActivity() {
         val dbHandler = DatabaseHandler(this)
         val getHappyPlaceList: ArrayList<HappyPlaceModel> = dbHandler.getHappyPlaceList()
 
-        if(getHappyPlaceList.size>0){
+        if(getHappyPlaceList.size > 0){
            rv_happy_places_list.visibility = View.VISIBLE
             tv_no_records_available.visibility = View.GONE
             setupHappyPlacesRecyclerView(getHappyPlaceList)
@@ -56,6 +57,11 @@ class MainActivity : AppCompatActivity() {
 
         })
 
+        editSwipe()
+        deleteSwipe()
+    }
+
+    private fun editSwipe(){
         val editSwipeHandler = object : SwipeToEditCallback(this){
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val adapter = rv_happy_places_list.adapter as HappyPlacesAdapter
@@ -64,7 +70,18 @@ class MainActivity : AppCompatActivity() {
         }
         val itemTouchHelper = ItemTouchHelper(editSwipeHandler)
         itemTouchHelper.attachToRecyclerView(rv_happy_places_list)
+    }
 
+    private fun deleteSwipe(){
+        val deleteSwipeHandler = object : SwipeToDeleteCallback(this){
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                val adapter = rv_happy_places_list.adapter as HappyPlacesAdapter
+                adapter.removeAt(viewHolder.adapterPosition)
+                getHappyPlacesListFromLocalDb() //check db once again
+            }
+        }
+        val deleteItemTouchHelper = ItemTouchHelper(deleteSwipeHandler)
+        deleteItemTouchHelper.attachToRecyclerView(rv_happy_places_list)
     }
 
 
@@ -82,6 +99,7 @@ class MainActivity : AppCompatActivity() {
     companion object{
          const val ADD_PLACE_ACTIVITY_REQUEST_CODE = 1
          const val EXTRA_PLACE_DETAILS = "extra_place_details"
+         const val DELETE_PLACE_ACTIVITY_REQUEST_CODE = 2
     }
 
 
