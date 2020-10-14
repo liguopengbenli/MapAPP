@@ -7,10 +7,12 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.lig.happyplaces.R
 import com.lig.happyplaces.adapters.HappyPlacesAdapter
 import com.lig.happyplaces.database.DatabaseHandler
 import com.lig.happyplaces.models.HappyPlaceModel
+import com.lig.happyplaces.utils.SwipeToEditCallback
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -72,5 +74,10 @@ class MainActivity : AppCompatActivity() {
          const val EXTRA_PLACE_DETAILS = "extra_place_details"
     }
 
+    val editSwipeHandler = object : SwipeToEditCallback(this){
+        override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+               
+        }
+    }
 
 }
