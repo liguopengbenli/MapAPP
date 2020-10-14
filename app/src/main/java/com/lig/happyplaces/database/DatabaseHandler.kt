@@ -54,10 +54,9 @@ class DatabaseHandler(context: Context) :
         contentValues.put(KEY_IMAGE, happyPlace.image)
         contentValues.put(KEY_DESCRIPTION, happyPlace.description)
         contentValues.put(KEY_DATE, happyPlace.date)
-        contentValues.put(KEY_TITLE, happyPlace.title)
         //contentValues.put(KEY_ID, happyPlace.id)   // ignore to make id auto
-        contentValues.put(KEY_LATITUDE, happyPlace.latitude)
         contentValues.put(KEY_LOCATION, happyPlace.location)
+        contentValues.put(KEY_LATITUDE, happyPlace.latitude)
         contentValues.put(KEY_LONGITUDE, happyPlace.longitude)
 
         val result = db.insert(TABLE_HAPPY_PLACE, null, contentValues)

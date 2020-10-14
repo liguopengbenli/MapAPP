@@ -110,9 +110,9 @@ class AddHappyPlaceActivity : AppCompatActivity(), View.OnClickListener {
                                  0, //  shoud be unique but it take care auto increase
                                  et_title.text.toString(),
                                  saveImageToInternalStorage.toString(),
-                                 et_description.toString(),
-                                 et_date.toString(),
-                                 et_location.toString(),
+                                 et_description.text.toString(),
+                                 et_date.text.toString(),
+                                 et_location.text.toString(),
                                  mLatitude,
                                  mLongitude
                                  )

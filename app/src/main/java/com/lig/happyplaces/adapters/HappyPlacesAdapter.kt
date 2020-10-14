@@ -8,7 +8,9 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.lig.happyplaces.R
 import com.lig.happyplaces.models.HappyPlaceModel
+import kotlinx.android.synthetic.main.activity_happy_place_detail.view.*
 import kotlinx.android.synthetic.main.item_happy_place.view.*
+import kotlinx.android.synthetic.main.item_happy_place.view.iv_place_image
 
 open class HappyPlacesAdapter(
     private val context: Context,
