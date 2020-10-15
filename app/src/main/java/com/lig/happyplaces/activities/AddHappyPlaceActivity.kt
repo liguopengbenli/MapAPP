@@ -17,6 +17,10 @@ import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.libraries.places.api.Places
+import com.google.android.libraries.places.api.model.Place
+import com.google.android.libraries.places.widget.Autocomplete
+import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.PermissionToken
@@ -30,6 +34,7 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import java.io.OutputStream
+import java.lang.Exception
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -48,6 +53,7 @@ class AddHappyPlaceActivity : AppCompatActivity(), View.OnClickListener {
         private const val GALLERY = 1
         private const val CAMERA = 2
         private const val IMAGE_DIR = "HappyPlacesImages"
+        private const val PLACE_AUTOCOMPLETE_REQUEST_CODE = 3
     }
 
 
@@ -58,6 +64,10 @@ class AddHappyPlaceActivity : AppCompatActivity(), View.OnClickListener {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         toolbar_add_place.setNavigationOnClickListener {
             onBackPressed()
+        }
+
+        if(!Places.isInitialized()){
+            Places.initialize(this@AddHappyPlaceActivity, resources.getString(R.string.google_maps_api_key))
         }
 
         if(intent.hasExtra(MainActivity.EXTRA_PLACE_DETAILS)){ //when edit exist item
@@ -89,6 +99,7 @@ class AddHappyPlaceActivity : AppCompatActivity(), View.OnClickListener {
         et_date.setOnClickListener(this)
         tv_add_image.setOnClickListener(this)
         btn_save.setOnClickListener(this)
+        et_location.setOnClickListener(this)
     }
 
     // when there are lots of views for onclick using this structure to simplifier
@@ -159,6 +170,20 @@ class AddHappyPlaceActivity : AppCompatActivity(), View.OnClickListener {
 
                 }
             }
+
+            R.id.et_location ->{
+                try {
+
+                    val fields = listOf(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG, Place.Field.ADDRESS)
+                    val intent = Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN, fields)
+                        .build(this@AddHappyPlaceActivity)
+                    startActivityForResult(intent, PLACE_AUTOCOMPLETE_REQUEST_CODE)
+
+                }catch (e:Exception){
+                    e.printStackTrace()
+                }
+            }
+
         }
     }
 
@@ -183,6 +208,11 @@ class AddHappyPlaceActivity : AppCompatActivity(), View.OnClickListener {
                 val thumbnail : Bitmap = data!!.extras!!.get("data") as Bitmap
                 saveImageToInternalStorage = saveImageToInternalStorage(thumbnail)
                 iv_place_image.setImageBitmap(thumbnail)
+            }else if(requestCode == PLACE_AUTOCOMPLETE_REQUEST_CODE){
+                val place: Place = Autocomplete.getPlaceFromIntent(data!!)
+                et_location.setText(place.address)
+                mLatitude = place.latLng!!.latitude
+                mLongitude = place.latLng!!.longitude
             }
         }
     }
