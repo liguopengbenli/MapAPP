@@ -34,6 +34,7 @@ import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import com.lig.happyplaces.R
 import com.lig.happyplaces.database.DatabaseHandler
 import com.lig.happyplaces.models.HappyPlaceModel
+import com.lig.happyplaces.utils.GetAddressFromLatLng
 import kotlinx.android.synthetic.main.activity_add_happy_place.*
 import java.io.File
 import java.io.FileOutputStream
@@ -134,6 +135,20 @@ class AddHappyPlaceActivity : AppCompatActivity(), View.OnClickListener {
             mLatitude = mLastLocation.latitude
             mLongitude = mLastLocation.longitude
             Log.i("Current Longitude", "$mLongitude")
+
+            val addressTask = GetAddressFromLatLng(this@AddHappyPlaceActivity, mLatitude, mLongitude)
+            addressTask.setAddressListener(object : GetAddressFromLatLng.AddressListener{
+                override fun onAddressFound(address: String?) {
+                    et_location.setText(address)
+                }
+
+                override fun onError() {
+                    Log.e("Get Address:: ", "Something went wrong")
+                }
+
+            })
+
+            addressTask.getAddressExecute()
         }
     }
 
