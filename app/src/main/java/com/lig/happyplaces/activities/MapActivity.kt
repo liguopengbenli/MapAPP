@@ -42,7 +42,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onMapReady(googleMap: GoogleMap?) {
         val position = LatLng(mHappyPlaceDetails!!.latitude, mHappyPlaceDetails!!.longitude)
         googleMap!!.addMarker(MarkerOptions().position(position).title(mHappyPlaceDetails!!.location)) //add marker on the position plus display title
-        val newLatLngZoom = CameraUpdateFactory.newLatLngZoom(position, 15f) // zoom in
+        val newLatLngZoom = CameraUpdateFactory.newLatLngZoom(position, 10f) // zoom in
         googleMap.animateCamera(newLatLngZoom)
     }
 
